@@ -180,6 +180,37 @@ param(
     Copy-Item -Path $psscriptroot\Machine\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup
 }
 
+Function Setup-SunshineInstall {
+param(
+[string]$DriveLetter,
+[string]$Team_ID,
+[string]$Key
+)
+    $new = @()
+
+    $content = get-content "$PSScriptRoot\user\psscriptsSunshine.ini" 
+
+    foreach ($line in $content) {
+        if ($line -like "0Parameters="){
+            $line = "0Parameters=$Team_ID $Key"
+            $new += $line
+            }
+        Else {
+            $new += $line
+            }
+    }
+    Set-Content -Value $new -Path "$PSScriptRoot\user\psscripts.ini"
+    if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon -ItemType directory | Out-Null}
+    if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logoff) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logoff -ItemType directory | Out-Null}
+    if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup -ItemType directory | Out-Null}
+    if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Shutdown) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Shutdown -ItemType directory | Out-Null}
+    if((Test-Path -Path $DriveLetter\ProgramData\Easy-GPU-P) -eq $true) {} Else {New-Item -Path $DriveLetter\ProgramData\Easy-GPU-P -ItemType directory | Out-Null}
+    Copy-Item -Path $psscriptroot\SunshineScripts\VDDMTTInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
+    Copy-Item -Path $psscriptroot\SunshineScripts\SunshineInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
+    Copy-Item -Path $psscriptroot\User\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
+    Copy-Item -Path $psscriptroot\User\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
+}
+
 function Convert-WindowsImage {
     <#
     .NOTES
@@ -2494,7 +2525,8 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
             }
 
             Write-W2VInfo "Setting up Parsec to install at boot"
-            Setup-ParsecInstall -DriveLetter $WindowsDrive -Team_ID $team_id -Key $key
+            #Setup-ParsecInstall -DriveLetter $WindowsDrive -Team_ID $team_id -Key $key
+            Setup-SunshineInstall -DriveLetter $WindowsDrive -Team_ID $team_id -Key $key
 
             if ($DiskLayout -eq "UEFI")
             {
