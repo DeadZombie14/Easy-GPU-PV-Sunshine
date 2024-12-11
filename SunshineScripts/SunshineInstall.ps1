@@ -1,5 +1,5 @@
 ﻿# Download sunshine
-(New-Object System.Net.WebClient).DownloadFile("https://github.com/LizardByte/Sunshine/releases/download/v2024.1127.551/sunshine-windows-installer.exe", "C:\Users\$env:USERNAME\Downloads\sunshine-windows-installer.exe")
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/LizardByte/Sunshine/releases/download/v0.23.1/sunshine-windows-installer.exe", "C:\Users\$env:USERNAME\Downloads\sunshine-windows-installer.exe")
 
 # Install silently
 Start-Process "C:\Users\$env:USERNAME\Downloads\sunshine-windows-installer.exe" -ArgumentList "/S"
