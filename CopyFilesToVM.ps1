@@ -1,22 +1,20 @@
-﻿$params = @{
-    VMName = "GPUPV"
-    SourcePath = "C:\Users\james\Downloads\Win11_English_x64.iso"
-    Edition    = 6
-    VhdFormat  = "VHDX"
-    DiskLayout = "UEFI"
-    SizeBytes  = 40GB
-    MemoryAmount = 8GB
-    CPUCores = 4
-    NetworkSwitch = "Default Switch"
-    VHDPath = "C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\"
-    UnattendPath = "$PSScriptRoot"+"\autounattend.xml"
-    GPUName = "AUTO"
-    GPUResourceAllocationPercentage = 50
-    Team_ID = ""
-    Key = ""
-    Username = "GPUVM"
-    Password = "CoolestPassword!"
-    Autologon = "true"
+﻿# Read params from file instead of hardcoding them
+$params = @{}
+Get-Content params.txt | Foreach-Object{
+    $var = $_.Split('=')
+    $key = $var[0].Trim()
+    $val = $var[1].Trim()
+    # Convert numbers and booleans if necessary
+    if ($val -match '^\d+$') {
+        $val = [int]$val
+    } elseif ($val -match '^\d+GB$') {
+        $val = [long]$val.Replace("GB", "") * 1GB
+    } elseif ($val -match '^\d+%$') {
+        $val = [int]$val.TrimEnd('%')
+    } elseif ($val -ieq "true" -or $val -ieq "false") {
+        $val = [bool]$val
+    }
+    $params[$key] = $val
 }
 
 Import-Module $PSSCriptRoot\Add-VMGpuPartitionAdapterFiles.psm1
@@ -207,8 +205,8 @@ param(
     if((Test-Path -Path $DriveLetter\ProgramData\Easy-GPU-P) -eq $true) {} Else {New-Item -Path $DriveLetter\ProgramData\Easy-GPU-P -ItemType directory | Out-Null}
     Copy-Item -Path $psscriptroot\SunshineScripts\VDDMTTInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
     Copy-Item -Path $psscriptroot\SunshineScripts\SunshineInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
-    Copy-Item -Path $psscriptroot\User\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
-    Copy-Item -Path $psscriptroot\User\Install.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
+    Copy-Item -Path $psscriptroot\User\psscriptsSunshine.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
+    Copy-Item -Path $psscriptroot\User\InstallSunshine.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
 }
 
 function Convert-WindowsImage {
