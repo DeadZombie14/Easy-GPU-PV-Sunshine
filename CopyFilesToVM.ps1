@@ -206,7 +206,7 @@ param(
     Copy-Item -Path $psscriptroot\SunshineScripts\VDDMTTInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
     Copy-Item -Path $psscriptroot\SunshineScripts\VBCableInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
     Copy-Item -Path $psscriptroot\SunshineScripts\SunshineInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
-    Copy-Item -Path $psscriptroot\User\psscriptsSunshine.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
+    Copy-Item -Path $psscriptroot\User\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
     Copy-Item -Path $psscriptroot\User\InstallSunshine.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
 }
 
