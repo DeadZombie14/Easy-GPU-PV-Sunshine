@@ -186,8 +186,7 @@ param(
 )
     $new = @()
 
-    $content = get-content "$PSScriptRoot\user\psscriptsSunshine.ini" 
-
+    $content = get-content "$PSScriptRoot\SunshineScripts\psscripts.ini" 
     foreach ($line in $content) {
         if ($line -like "0Parameters="){
             $line = "0Parameters=$Team_ID $Key"
@@ -197,7 +196,8 @@ param(
             $new += $line
             }
     }
-    Set-Content -Value $new -Path "$PSScriptRoot\user\psscripts.ini"
+    Set-Content -Value $new -Path "$PSScriptRoot\SunshineScripts\psscripts.ini"
+    
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon -ItemType directory | Out-Null}
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logoff) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logoff -ItemType directory | Out-Null}
     if((Test-Path -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup) -eq $true) {} Else {New-Item -Path $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup -ItemType directory | Out-Null}
@@ -206,8 +206,8 @@ param(
     Copy-Item -Path $psscriptroot\SunshineScripts\VDDMTTInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
     Copy-Item -Path $psscriptroot\SunshineScripts\VBCableInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
     Copy-Item -Path $psscriptroot\SunshineScripts\SunshineInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
-    Copy-Item -Path $psscriptroot\User\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
-    Copy-Item -Path $psscriptroot\User\InstallSunshine.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
+    Copy-Item -Path $psscriptroot\SunshineScripts\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
+    Copy-Item -Path $psscriptroot\SunshineScripts\InstallSunshine.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
 }
 
 function Convert-WindowsImage {
