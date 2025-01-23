@@ -17,6 +17,11 @@ Get-Content params.txt | Foreach-Object{
     $params[$key] = $val
 }
 
+# Replace password on xml file as well, it is needed to make the password 
+$xmlContent = Get-Content -Path $params['UnattendPath'] -Raw
+$updatedXmlContent = $xmlContent -replace "CoolestPassword!", $params['Password']
+$updatedXmlContent | Set-Content -Path $params['UnattendPath'] -Encoding UTF8 -Force
+
 Import-Module $PSSCriptRoot\Add-VMGpuPartitionAdapterFiles.psm1
 
 function Is-Administrator  
@@ -206,8 +211,8 @@ param(
     Copy-Item -Path $psscriptroot\SunshineScripts\VDDMTTInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
     Copy-Item -Path $psscriptroot\SunshineScripts\VBCableInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
     Copy-Item -Path $psscriptroot\SunshineScripts\SunshineInstall.ps1 -Destination $DriveLetter\ProgramData\Easy-GPU-P
-    Copy-Item -Path $psscriptroot\SunshineScripts\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts
-    Copy-Item -Path $psscriptroot\SunshineScripts\InstallSunshine.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\User\Scripts\Logon
+    Copy-Item -Path $psscriptroot\SunshineScripts\psscripts.ini -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts
+    Copy-Item -Path $psscriptroot\SunshineScripts\InstallSunshine.ps1 -Destination $DriveLetter\Windows\system32\GroupPolicy\Machine\Scripts\Startup
 }
 
 function Convert-WindowsImage {
